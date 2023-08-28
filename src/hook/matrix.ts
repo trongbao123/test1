@@ -1,17 +1,18 @@
-import { useQuery } from "react-query"
+import { useQuery, useQueryClient } from "react-query"
 import { matrix } from "../service/MatrixService"
 import { MatrixData } from "../interface/MatrixData"
+import { useMutation } from 'react-query';
 
 export const useMatrix = () => {
   const { data } = useQuery("repoData", async () => await matrix.getMatrix(), {
-    staleTime: 20000
+    staleTime: 2000
   })
   return data
 }
 
 export const useMatrixById = (id: any) => {
   const { data, isLoading, isError } = useQuery(["matrix", id], async () => await matrix.getMatrixDetails(id), {
-    staleTime: 20000
+    staleTime: 2000
   })
   return { data, isLoading, isError }
 }
@@ -51,6 +52,8 @@ export const postMatricCell = async (data: any) => {
   return response?.data
 }
 
-export const updateMatrixData = (id: any, data: any) => {
-
+export const updateMatrixData = async (id: any, data: any) => {
+  const response = await matrix.updateMatrices(id, data)
+  return response?.data
 }
+

@@ -5,24 +5,39 @@ import SelectMatrix from "../view/SelectMatrix"
 import MapMatric from "../view/MapMatric"
 import PositionArtribute from "../view/PositionArtribute"
 import { Button, Radio } from "@mui/material"
-import { updateMatrixData, useMatrix, useMatrixCell, useMatrixCellById } from "../hook/matrix"
+import { postMatrix, updateMatrixData, useMatrix, useMatrixCell, useMatrixCellById } from "../hook/matrix"
 import { useForm, Controller } from "react-hook-form"
 import { TextField, InputLabel, FormHelperText, } from "@material-ui/core"
 import { matrix } from "../service/MatrixService"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMatrixById } from "../hook/matrix"
-
-
+import { useMutation, useQueryClient } from 'react-query';
 
 
 export default function Home() {
-  const [selectedMatrixId, setSelectedMatrixId] = useState(null || 0);
+  const queryClient = useQueryClient();
+  const [selectedMatrixId, setSelectedMatrixId] = useState<any>(null);
   const [selectedMatrixCellId, setSelectedMatrixCellId] = useState(null || 0);
+  const createMatrixMutation = useMutation(postMatrix, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('matrices');
+    },
+  });
+
+  const updateMatrixMutation = useMutation((params: { id: any, data: any }) => updateMatrixData(params.id, params.data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('matrices');
+      alert("Cập nhật thành công");
+    },
+    onError: () => {
+      alert("Cập nhật thất bại");
+    },
+  });
+
 
   const matrixData = useMatrix();
   const matrixCell = useMatrixCell();
-  const maxtrixCellByid = useMatrixCellById(selectedMatrixCellId)
   const { data } = useMatrixById(selectedMatrixId);
 
   const schema = yup.object().shape({
@@ -53,10 +68,17 @@ export default function Home() {
   }, [selectedMatrixId, data])
 
   const onSubmitForm = async (data: any) => {
+    console.log(data, "data")
     if (!selectedMatrixId) {
-      await matrix.createMatrices(data);
+      await createMatrixMutation.mutateAsync(data);
     } else {
-      await updateMatrixData(selectedMatrixId, data);
+      const param = {
+        id: selectedMatrixId,
+        data: data
+      }
+      await updateMatrixMutation.mutateAsync(
+        param
+      );;
     }
   }
 

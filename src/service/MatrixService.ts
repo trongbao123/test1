@@ -17,7 +17,7 @@ export class matrixService extends BaseService {
   createMatrices = (data: any) => {
     return this.post(`matrices`, data);
   }
-  updateMatrices = (id: any, data: MatrixData) => {
+  updateMatrices = (id: any, data: any) => {
     return this.put(`matrices/${id}`, data);
   }
 
