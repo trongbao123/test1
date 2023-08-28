@@ -20,9 +20,9 @@ export const postMatrix = async (data: MatrixData) => {
   const response = await matrix.createMatrices(data)
 
   if (response?.data?.error === true) {
-    alert("thêm thất bại")
+    alert("thêm thất bại");
   } else {
-    alert("thêm mới thành công")
+    alert("thêm mới thành công");
   }
 
   return response?.data?.data
@@ -36,4 +36,21 @@ export const useMatrixCell = () => {
 export const useMatrixCellById = (id: any) => {
   const { data, isLoading, isError } = useQuery(["matrixCell", id], async () => await matrix.getMatricCellDetails(id), { staleTime: 200000 })
   return { data, isLoading, isError }
+}
+
+
+export const postMatricCell = async (data: any) => {
+  const response = await matrix.postMatricCell(data)
+
+  if (response?.data?.error === false) {
+    alert("thêm thành công")
+  } else {
+    alert("fails")
+  }
+
+  return response?.data
+}
+
+export const updateMatrixData = (id: any, data: any) => {
+
 }

@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SelectMatrix: React.FC<Props> = ({ propMatric, selectedMatrixId, setSelectedMatrixId }) => {
-  useEffect(() => { }, [])
+
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedMatrixId(event.target.value as string)
   }

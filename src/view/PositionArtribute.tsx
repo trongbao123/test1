@@ -8,13 +8,13 @@ import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 
 interface matrixByidProps {
-  selectedMatrixCellId: any
+  selectedMatrixCellId: any;
 }
 const PositionArtribute: React.FC<matrixByidProps> = ({ selectedMatrixCellId }) => {
-  const maxtrixCellByid = useMatrixCellById(selectedMatrixCellId)
+  const maxtrixCellByid = useMatrixCellById(selectedMatrixCellId);
   const schema = yup.object().shape({
     label: yup.string().required("nhãn bắt buộc!"),
-    attribute1: yup.string().required("Giá trị  bắt buộc!")
+    attribute: yup.string().required("Giá trị  bắt buộc!"),
   })
 
   const {
@@ -23,35 +23,29 @@ const PositionArtribute: React.FC<matrixByidProps> = ({ selectedMatrixCellId }) 
     formState: { errors }
   } = useForm({
     mode: "onBlur",
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   })
 
   const handleValue = () => {
-    setValue("label", maxtrixCellByid?.data?.data?.data?.label ? maxtrixCellByid?.data?.data?.data?.label : "")
-    setValue("attribute1", maxtrixCellByid?.data?.data?.data?.attribute1 ? maxtrixCellByid?.data?.data?.data?.attribute1 : "")
+    setValue("label", maxtrixCellByid?.data?.data?.data?.label ? maxtrixCellByid?.data?.data?.data?.label : "");
+    setValue("attribute", maxtrixCellByid?.data?.data?.data?.attribute ? maxtrixCellByid?.data?.data?.data?.attribute : "");
   }
 
-  const isInitialMount = useRef(true)
-
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-    } else {
-      handleValue()
-    }
-  }, [maxtrixCellByid])
+    handleValue();
+  }, [maxtrixCellByid]);
 
   return (
     <Box>
       <Card>
-        <CardHeader title={`Thuộc tính của vị trí  x:${maxtrixCellByid?.data?.data?.data?.row_index ? maxtrixCellByid?.data?.data?.data?.row_index : 0}, y :${maxtrixCellByid?.data?.data?.data?.column_index ? maxtrixCellByid?.data?.data?.data?.column_index : 0} `}></CardHeader>
+        <CardHeader title={`Thuộc tính của vị trí  x:${maxtrixCellByid?.data?.data?.data?.row_number ? maxtrixCellByid?.data?.data?.data?.row_number : 0}, y :${maxtrixCellByid?.data?.data?.data?.column_number ? maxtrixCellByid?.data?.data?.data?.column_number : 0} `}></CardHeader>
       </Card>
       <Box sx={{ marginTop: 5 }}>
         <FormControl fullWidth>
           <Controller name="label" control={control} rules={{ required: true }} render={({ field: { value, onChange } }) => <TextField autoFocus className="input-desc" id="outlined-basic" label={"Nhãn Vị Trí"} variant="outlined" value={value ? value : ""} onChange={onChange} />} />
         </FormControl>
         <FormControl fullWidth className="mt-3">
-          <Controller name="attribute1" control={control} rules={{ required: true }} render={({ field: { value, onChange } }) => <TextField autoFocus className="input-desc" id="outlined-basic" label={"Giá Trị"} variant="outlined" value={value ? value : ""} onChange={onChange} />} />
+          <Controller name="attribute" control={control} rules={{ required: true }} render={({ field: { value, onChange } }) => <TextField autoFocus className="input-desc" id="outlined-basic" label={"Giá Trị"} variant="outlined" value={value ? value : ""} onChange={onChange} />} />
         </FormControl>
         <FormControl fullWidth className="mt-3">
           <TextField autoFocus className="input-desc" id="outlined-basic" label={"Ghi Chú"} variant="outlined" />

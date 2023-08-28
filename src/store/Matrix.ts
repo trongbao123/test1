@@ -1,22 +1,34 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import { matrix } from "../service/MatrixService"
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { matrix } from '../service/MatrixService';
+import { RootState } from './store';
 
-export const updateMatric = async (id: any, data: any) => {
-  const response = await matrix.updateMatrices(id, data)
-  if (response?.data?.error) {
-    alert("cập nhật thất bại")
-  } else {
-    alert("cập nhật thành công")
-  }
-  return response?.data?.data
+interface ApiState {
+  data: [] | null;
 }
 
+export const fetchMatrix = createAsyncThunk<string, void>('matrix/fetchMatrix', async () => {
+  const response = await matrix.getMatrix();
+  console.log(response, 'abc');
+  return response?.data;
+});
+
 const matrixSlice = createSlice({
-  name: "matrix",
-  initialState: {} as Record<string, any>,
-  reducers: {}
-})
+  name: 'matrix',
+  initialState: {
+    data: [],
+  } as ApiState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchMatrix.fulfilled, (state: any, action: PayloadAction<string>) => {
+      console.log(state, "state redux");
+      console.log(action, "actions");
+      state.data = action.payload;
+    });
+  },
+});
 
-export const { } = matrixSlice.actions
-
-export default matrixSlice.reducer
+export const selectCartItems = createSelector(
+  (state: RootState) => state.Matrix.data,
+  (items) => items
+);
+export default matrixSlice.reducer;
